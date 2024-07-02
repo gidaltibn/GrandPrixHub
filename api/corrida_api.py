@@ -16,12 +16,14 @@ corrida_model = api.model('Corrida', {
 class CorridaList(Resource):
     @api.marshal_list_with(corrida_model)
     def get(self):
+        """Lista todas as corridas"""
         corridas = Corrida.query.all()
         return corridas
 
     @api.expect(corrida_model)
     @api.marshal_with(corrida_model, code=201)
     def post(self):
+        """Cria uma nova corrida"""
         data = api.payload
         data_corrida = datetime.strptime(data['data_corrida'], '%Y-%m-%d').date()  # Converte string para date
         nova_corrida = Corrida(
@@ -39,12 +41,14 @@ class CorridaList(Resource):
 class CorridaResource(Resource):
     @api.marshal_with(corrida_model)
     def get(self, id):
+        """Obtém uma corrida pelo seu identificador"""
         corrida = Corrida.query.get_or_404(id)
         return corrida
 
     @api.expect(corrida_model)
     @api.marshal_with(corrida_model)
     def put(self, id):
+        """Atualiza uma corrida pelo seu identificador"""
         corrida = Corrida.query.get_or_404(id)
         data = api.payload
         corrida.nome = data.get('nome', corrida.nome)
@@ -55,6 +59,7 @@ class CorridaResource(Resource):
 
     @api.response(204, 'Corrida excluída')
     def delete(self, id):
+        """Deleta uma corrida pelo seu identificador"""
         corrida = Corrida.query.get_or_404(id)
         db.session.delete(corrida)
         db.session.commit()
